@@ -295,17 +295,19 @@
                                     loading.scrollIntoView({ behavior: 'smooth' });
 
                         try {
-                                            const response = await fetch('https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=1024&height=768&nologo=true&seed=' + Math.floor(Math.random() * 10000));
-                                            if (!response.ok) throw new Error('Falha na geração da imagem');
-                                            const blob = await response.blob();
-                                            const imageUrl = URL.createObjectURL(blob);
-                                            resultImage.src = imageUrl;
-                                            loading.style.display = 'none';
-                                            resultArea.style.display = 'block';
-                                            resultArea.scrollIntoView({ behavior: 'smooth' });
-                                        } catch (error) {
-                                            loading.style.display = 'none';
-                                            errorMsg.textContent = 'Erro ao gerar a imagem: ' + error.message;
+                // Usar a API Puter.js para gerar imagem
+                const result = await puter.ai.txt2img(prompt, { width: 1024, height: 768 });
+                resultImage.src = result.src;
+                resultImage.onload = function() {
+                    loading.style.display = 'none';
+                    resultArea.style.display = 'block';
+                    resultArea.scrollIntoView({ behavior: 'smooth' });
+                };
+            } catch (error) {
+                loading.style.display = 'none';
+                errorMsg.textContent = 'Erro ao gerar a imagem: ' + error.message;
+                errorMsg.style.display = 'block';
+            }
                                             errorMsg.style.display = 'block';
                                         }
                                 }
